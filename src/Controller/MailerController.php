@@ -21,16 +21,15 @@ final class MailerController extends AbstractController
     }
 
     #[Route('/mailer', methods: 'POST', name: 'app_mailer_post')]
-    public function post(Request $request, MailerInterface $mailer): JsonResponse
+    public function post(Request $request, MailerInterface $mailer, string $requestFrom, string $requestTo): JsonResponse
     {
         $params = $request->getPayload()->all();
         $params['extra']['count_uploaded_files'] = count($request->files->get('extra')['attachments'] ?? []);
 
         $email = (new Email())
-            ->from('geoffrey@2dek.be')
-            ->to('ygustin@gmail.com')
+            ->from($requestFrom)
+            ->to($requestTo)
             ->subject('CleAuto - Demande d\'intervention')
-            ->text('Sending emails is fun again!')
             ->html(
                 $this->renderView('mailer/car-request.html.twig', $params)
             );
