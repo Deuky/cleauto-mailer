@@ -34,8 +34,18 @@ final class MailerController extends AbstractController
                 $this->renderView('mailer/car-request.html.twig', $params)
             );
 
-        foreach ($request->files->get('extra')["attachments"] as $i => $file) {
-            $email->addPart(new DataPart(new File($file), "photo".$i.".jpg"));
+        foreach ($request->files->get('extra')["attachments"] as $i => $file) { 
+            $email->addPart(
+                new DataPart(
+                    new File($file),
+                    implode('.', [
+                            'item',
+                            $i,
+                            $file->guessClientExtension()
+                        ]
+                    )
+                )
+            );
         }
 
         $mailer->send($email);
