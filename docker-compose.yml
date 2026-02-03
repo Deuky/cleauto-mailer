@@ -1,0 +1,7 @@
+services:
+  cleauto-mailer:
+    image: deuky/cleauto-mailer
+    build:
+      target: ${BUILD_TARGET:-base}
+    ports:
+      - 3002:3000

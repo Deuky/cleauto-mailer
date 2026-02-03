@@ -1,0 +1,18 @@
+configure: Makefile
+
+build: vendor
+
+install:
+	composer install
+
+compile:
+	
+
+start:
+	php -S 0.0.0.0:3000 -t ./public
+
+Makefile:
+	cp -v $@.$(ENVIRONMENT) Makefile
+
+vendor:
+	composer install --no-scripts

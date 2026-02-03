@@ -15,6 +15,10 @@
 !bin/**
 !.github
 !.github/**
+!Dockerfile
+!docker-compose.yml
+!Makefile
+!Makefile.docker
 
 public/assets
 templates/app
