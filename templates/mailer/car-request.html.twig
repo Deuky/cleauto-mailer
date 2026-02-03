@@ -1,0 +1,28 @@
+<html>
+	<body>
+		<table  border="1" cellpadding="6" cellspacing="0">
+<tr><th colspan="2"><h2 style="margin: 0px">Information personnel</h2></th></tr>
+<tr><th width="50%">Question</th><th width="50%">Réponse</th></tr>
+<tr><td>Nom & Prénom</td><td>{{ personal.name|default() }}</td></tr>
+<tr><td>Téléphone</td><td>{{ personal.phone|default() }}</td></tr>
+<tr><td>E-Mail</td><td>{{ personal.email|default() }}</td></tr>
+
+<tr><th colspan="2"><h2 style="margin: 0px">Voiture</h2></th></tr>
+<tr><td>Marque</td><td>{{ car.brand|default() }}</td></tr>
+<tr><td>Modèle</td><td>{{ car.model|default() }}</td></tr>
+<tr><td>Carburant</td><td>{{ car.fuel|default() }}</td></tr>
+<tr><td>Numéro de chassis</td><td>{{ car.VIN|default() }}</td></tr>
+<tr><td>Première Immatriculation</td><td>{{ car["first-registration"]|default() }}</td></tr>
+
+<tr><th colspan="2"><h2 style="margin: 0px">Demande</h2></th></tr>
+<tr><td>Type de clef</td><td>{{ request["key-type"]|default() }}</td></tr>
+<tr><td>Lieu de programmation</td><td>{{ request["target-intervention"]|default() }}</td></tr>
+<tr><td>Clef existantes</td><td>{{ request.keys|default() }}</td></tr>
+
+<tr><th colspan="2"><h2 style="margin: 0px">Extra information</h2></th></tr>
+<tr><td>Adresse</td><td>{{ extra.address|default() }}</td></tr>
+<tr><td>Nombre de fichier attaché</td><td>{{ extra.count_uploaded_files }}</td></tr>
+<tr><td>Information supplémentaire</td><td>{{ extra.information|default() }}</td></tr>
+		</table>
+	</body>
+</html>
