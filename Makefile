@@ -1,4 +1,5 @@
 DOCKER_ARTIFACT?=$(shell docker create ghcr.io/deuky/cleauto-form/artifact:latest bash)
+.PHONY: public/*
 
 configure: public/* templates/app
 
