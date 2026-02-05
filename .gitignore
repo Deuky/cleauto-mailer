@@ -10,7 +10,7 @@
 !config
 !config/**
 !public
-!public/**
+!public/index.php
 !bin
 !bin/**
 !.github

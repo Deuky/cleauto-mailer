@@ -1,12 +1,12 @@
 DOCKER_ARTIFACT?=$(shell docker create ghcr.io/deuky/cleauto-form/artifact:latest bash)
 
-configure: public/assets templates/app
+configure: public/* templates/app
 
 .artifact:
 	docker cp $(DOCKER_ARTIFACT):/artifact .artifact; \
 	docker rm $(DOCKER_ARTIFACT)
 
-public/assets: .artifact
+public/*: .artifact
 	cp -rv .artifact/* ./public
 
 templates/app: .artifact 
