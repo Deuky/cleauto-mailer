@@ -7,7 +7,7 @@ configure: public/assets templates/app
 	docker rm $(DOCKER_ARTIFACT)
 
 public/assets: .artifact
-	cp -rv .artifact/assets ./public
+	cp -rv .artifact/* ./public
 
 templates/app: .artifact 
 	mkdir -vp $@; \

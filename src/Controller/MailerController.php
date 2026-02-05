@@ -24,32 +24,42 @@ final class MailerController extends AbstractController
     public function post(Request $request, MailerInterface $mailer, string $requestFrom, string $requestTo): JsonResponse
     {
         $params = $request->getPayload()->all();
-        $params['extra']['count_uploaded_files'] = count($request->files->get('extra')['attachments'] ?? []);
+        $params['agreement']['rgpd']['count-uploaded-files'] = 0;
+        $params['key']['attachments'] = $request->files->get('key')['attachments'] ?? [];
+        $params['car']['attachments'] = $request->files->get('car')['attachments'] ?? [];
+        $attachments = [
+            $params['key']['attachments'],
+            $params['car']['attachments']
+        ];
 
         $email = (new Email())
             ->from($requestFrom)
             ->to($requestTo)
-            ->subject('CleAuto - Demande d\'intervention')
-            ->html(
-                $this->renderView('mailer/car-request.html.twig', $params)
-            );
+            ->subject('CleAuto - Demande d\'intervention');
 
-        foreach ($request->files->get('extra')["attachments"] as $i => $file) { 
+        array_walk_recursive($attachments, function($file) use (&$params, $email) {
             $email->addPart(
                 new DataPart(
                     new File($file),
                     implode('.', [
                             'item',
-                            $i,
+                            $params['agreement']['rgpd']['count-uploaded-files']++,
                             $file->guessClientExtension()
                         ]
                     )
                 )
             );
-        }
+        });
 
-        $mailer->send($email);
+        $rawData = tmpfile();
+        fwrite($rawData, json_encode($params));
 
-        return $this->json([]);
+        $email->addPart((new DataPart($rawData, 'raw-data.json', 'application/json'))->asInline());
+
+        $mailer->send($email->html(
+                $this->renderView('mailer/car-request.html.twig', $params)
+            ));
+
+        return $this->json(["Accept"]);
     }
 }
