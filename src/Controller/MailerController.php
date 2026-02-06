@@ -14,7 +14,7 @@ use Symfony\Component\Mime\Part\File;
 
 final class MailerController extends AbstractController
 {
-    #[Route('/mailer', methods: 'GET', name: 'app_mailer_get')]
+    #[Route('/', methods: 'GET', name: 'app_mailer_get')]
     public function index(MailerInterface $mailer): Response
     {
         return $this->render('app/index.html.twig');

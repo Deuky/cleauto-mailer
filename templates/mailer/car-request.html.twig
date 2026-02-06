@@ -13,6 +13,7 @@
 			<tr><td>Carburant</td><td>{{ car.fuel|default() }}</td></tr>
 			<tr><td>Numéro de chassis</td><td>{{ car.VIN|default() }}</td></tr>
 			<tr><td>Première Immatriculation</td><td>{{ car["first-registration"]|default() }}</td></tr>
+			<tr><td>Adresse de dépannage</td><td>{{ car["address"]|default() }}</td></tr>
 			<tr><td>Photos</td><td>{{ car["attachments"]|length }}</td></tr>
 
 			<tr><td colspan="2"><h2 style="margin: 0px">Key</h2></td></tr>
@@ -22,7 +23,7 @@
 			<tr><td colspan="2"><h2 style="margin: 0px">Demande</h2></td></tr>
 			<tr><td>Réparation de la clef</td><td>{{ request["repair-key"]|emoji }}</td></tr>
 			<tr><td>Copie de clef</td><td>{{ request["copy-key"]|emoji }}</td></tr>
-			<tr><td>1 Clef fonctionnelle</td><td>{{ request["key-works"]|emoji }}</td></tr>
+			<tr><td>Télécommande fonctionnelle</td><td>{{ request["command-works"]|emoji }}</td></tr>
 			<tr><td>Dépanage: toutes clefs perdues</td><td>{{ request["all-key-lost"]|emoji }}</td></tr>
 			<tr><td>Voiture ouverte</td><td>{{ request["car-opened"]|emoji }}</td></tr>
 
