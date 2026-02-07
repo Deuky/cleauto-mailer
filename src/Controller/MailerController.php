@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,6 +26,7 @@ final class MailerController extends AbstractController
     {
         $params = $request->getPayload()->all();
         $params['agreement']['rgpd']['count-uploaded-files'] = 0;
+        $params['agreement']['rgpd']['request-trait-date'] = new DateTime();
         $params['key']['attachments'] = $request->files->get('key')['attachments'] ?? [];
         $params['car']['attachments'] = $request->files->get('car')['attachments'] ?? [];
         $attachments = [
@@ -61,5 +63,45 @@ final class MailerController extends AbstractController
             ));
 
         return $this->json(["Accept"]);
+    }
+
+    #[Route('/mailer/preview', methods: 'POST', name: 'app_mailer_preview')]
+    public function preview(Request $request, MailerInterface $mailer, string $requestFrom, string $requestTo): Response
+    {
+        $params = $request->getPayload()->all();
+        $params['agreement']['rgpd']['count-uploaded-files'] = 0;
+        $params['agreement']['rgpd']['request-trait-date'] = (new DateTime())->format(DATE_W3C);
+        $params['key']['attachments'] = $request->files->get('key')['attachments'] ?? [];
+        $params['car']['attachments'] = $request->files->get('car')['attachments'] ?? [];
+        $attachments = [
+            $params['key']['attachments'],
+            $params['car']['attachments']
+        ];
+
+        $email = (new Email())
+            ->from($requestFrom)
+            ->to($requestTo)
+            ->subject('CleAuto - Demande d\'intervention');
+
+        array_walk_recursive($attachments, function($file) use (&$params, $email) {
+            $email->addPart(
+                new DataPart(
+                    new File($file),
+                    implode('.', [
+                            'item',
+                            $params['agreement']['rgpd']['count-uploaded-files']++,
+                            $file->guessClientExtension()
+                        ]
+                    )
+                )
+            );
+        });
+
+        $rawData = tmpfile();
+        fwrite($rawData, json_encode($params));
+
+        $email->addPart((new DataPart($rawData, 'raw-data.json', 'application/json'))->asInline());
+
+        return $this->render('mailer/car-request.html.twig', $params);
     }
 }
