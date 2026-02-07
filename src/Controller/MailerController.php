@@ -26,7 +26,7 @@ final class MailerController extends AbstractController
     {
         $params = $request->getPayload()->all();
         $params['agreement']['rgpd']['count-uploaded-files'] = 0;
-        $params['agreement']['rgpd']['request-trait-date'] = new DateTime();
+        $params['agreement']['rgpd']['request-trait-date'] = (new DateTime())->format(DATE_W3C);
         $params['key']['attachments'] = $request->files->get('key')['attachments'] ?? [];
         $params['car']['attachments'] = $request->files->get('car')['attachments'] ?? [];
         $attachments = [
