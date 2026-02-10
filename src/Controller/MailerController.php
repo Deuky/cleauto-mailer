@@ -25,6 +25,7 @@ final class MailerController extends AbstractController
     public function post(Request $request, MailerInterface $mailer, string $requestFrom, string $requestTo): JsonResponse
     {
         $params = $request->getPayload()->all();
+        $params['agreement']['rgpd']['ip'] = $request->server->get('REMOTE_ADDR') ?? $request->getClientIp();
         $params['agreement']['rgpd']['count-uploaded-files'] = 0;
         $params['agreement']['rgpd']['request-trait-date'] = (new DateTime())->format(DATE_W3C);
         $params['key']['attachments'] = $request->files->get('key')['attachments'] ?? [];
@@ -69,6 +70,7 @@ final class MailerController extends AbstractController
     public function preview(Request $request, MailerInterface $mailer, string $requestFrom, string $requestTo): Response
     {
         $params = $request->getPayload()->all();
+        $params['agreement']['rgpd']['ip'] = $request->server->get('REMOTE_ADDR') ?? $request->getClientIp();
         $params['agreement']['rgpd']['count-uploaded-files'] = 0;
         $params['agreement']['rgpd']['request-trait-date'] = (new DateTime())->format(DATE_W3C);
         $params['key']['attachments'] = $request->files->get('key')['attachments'] ?? [];
