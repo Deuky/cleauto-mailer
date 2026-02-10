@@ -1,0 +1,18 @@
+security:
+  providers:
+    in_memory:
+      memory:
+        users:
+          admin:
+            password: '%env.APP_ADMIN_PASSWORD%'
+            roles: ['ROLE_USER']
+
+  firewalls:
+    main:
+      anonymous: false
+      http_basic: ~
+      provider: in_memory
+
+  access_control:
+    - { path: '^/$', roles: ROLE_USER }
+    - { path: '^/', roles: IS_AUTHENTICATED_ANONYMOUSLY }
