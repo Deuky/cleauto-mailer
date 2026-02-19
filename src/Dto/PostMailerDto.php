@@ -5,11 +5,11 @@ namespace App\Dto;
 readonly class PostMailerDto
 {
     public function __construct(
-        public array $personal,
-        public array $car,
-        public array $key,
-        public array $request,
+        public PersonalDto $personal,
+        public CarDto $car,
+        public KeyDto $key,
+        public RequestDto $request,
         public array $extra,
-        public array $agreement,
+        public AgreementDto $agreement,
     ) {}
 }
