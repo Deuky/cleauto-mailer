@@ -10,8 +10,15 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Mime\Part\DataPart;
-use Symfony\Component\Mime\Part\File;
+use App\Dto\PostMailerDto;
+use App\Entity\Car;
+use App\Entity\Personal;
+use App\Entity\Key;
+use App\Entity\KeyRequest;
+use App\Entity\RGPD;
+use App\Entity\Extra;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
+use Symfony\Component\Serializer\SerializerInterface;
 
 final class MailerController extends AbstractController
 {
@@ -67,18 +74,18 @@ final class MailerController extends AbstractController
     }
 
     #[Route('/mailer/preview', methods: 'POST', name: 'app_mailer_preview')]
-    public function preview(Request $request, MailerInterface $mailer, string $requestFrom, string $requestTo): Response
+    public function preview(Request $request, MailerInterface $mailer, string $requestFrom, string $requestTo, SerializerInterface $serializer, #[MapRequestPayload] PostMailerDto $dto): Response
     {
-        $params = $request->getPayload()->all();
-        $params['agreement']['rgpd']['ip'] = $request->server->get('REMOTE_ADDR') ?? $request->getClientIp();
-        $params['agreement']['rgpd']['count-uploaded-files'] = 0;
-        $params['agreement']['rgpd']['request-trait-date'] = (new DateTime())->format(DATE_W3C);
-        $params['key']['attachments'] = $request->files->get('key')['attachments'] ?? [];
-        $params['car']['attachments'] = $request->files->get('car')['attachments'] ?? [];
-        $attachments = [
-            $params['key']['attachments'],
-            $params['car']['attachments']
-        ];
+        // Populate entities using serializer
+        $personal = $serializer->denormalize($dto->personal, Personal::class);
+        $car = $serializer->denormalize($dto->car, Car::class);
+        $key = $serializer->denormalize($dto->key, Key::class);
+        $keyRequest = $serializer->denormalize($dto->request, KeyRequest::class);
+        $rgpd = $serializer->denormalize($dto->agreement['rgpd'], RGPD::class);
+        $extra = $serializer->denormalize($dto->extra, Extra::class);
+
+        // Update params with entities or keep as is, but since template uses arrays, keep params
+        // But to use entities, perhaps pass them separately, but for now, keep params
 
         $email = (new Email())
             ->from($requestFrom)
