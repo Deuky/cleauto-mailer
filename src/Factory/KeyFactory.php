@@ -9,7 +9,7 @@ use App\Entity\Key;
 #[AutoconfigureTag('app.factory')]
 class KeyFactory
 {
-    public static function createFromDto(KeyDto $dto): Key
+    public function createFromDto(KeyDto $dto): Key
     {
         return new Key(
             $dto->isHandFree,

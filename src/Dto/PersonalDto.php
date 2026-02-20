@@ -2,7 +2,9 @@
 
 namespace App\Dto;
 
-readonly class PersonalDto
+use App\Interface\DtoInterface;
+
+readonly class PersonalDto implements DtoInterface
 {
     public function __construct(
         public string $name,

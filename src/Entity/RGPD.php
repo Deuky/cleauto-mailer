@@ -4,13 +4,13 @@ namespace App\Entity;
 
 use DateTimeInterface;
 
-readonly class RGPD
+readonly class RGPD extends AbstractEntity
 {
     public function __construct(
         public bool $status,
         public string $content,
         public DateTimeInterface $requestDate,
-        public string $requestTraitDate,
+        public DateTimeInterface $requestTraitDate,
         public string $url,
         public string $ip,
         public int $countUploadedFiles,

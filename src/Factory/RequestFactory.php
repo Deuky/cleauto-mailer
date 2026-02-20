@@ -4,14 +4,14 @@ namespace App\Factory;
 
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use App\Dto\RequestDto;
-use App\Entity\KeyRequest;
+use App\Entity\Request;
 
 #[AutoconfigureTag('app.factory')]
-class KeyRequestFactory
+class RequestFactory
 {
-    public static function createFromDto(RequestDto $dto): KeyRequest
+    public function createFromDto(RequestDto $dto): Request
     {
-        return new KeyRequest(
+        return new Request(
             $dto->repairKey,
             $dto->copyKey,
             $dto->commandWorks,

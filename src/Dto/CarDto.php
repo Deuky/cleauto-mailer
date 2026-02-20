@@ -4,8 +4,9 @@ namespace App\Dto;
 
 use App\Enum\FuelType;
 use DateTimeInterface;
+use App\Interface\DtoInterface;
 
-readonly class CarDto
+readonly class CarDto implements DtoInterface
 {
     public function __construct(
         public string $brand,
@@ -14,6 +15,7 @@ readonly class CarDto
         public string $VIN,
         public DateTimeInterface $firstRegistration,
         public string $address,
-        public array $attachments,
-    ) {}
+        public array $attachments = [],
+    ) {
+    }
 }

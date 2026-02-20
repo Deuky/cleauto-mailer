@@ -9,7 +9,7 @@ use App\Entity\Car;
 #[AutoconfigureTag('app.factory')]
 class CarFactory
 {
-    public static function createFromDto(CarDto $dto): Car
+    public function createFromDto(CarDto $dto): Car
     {
         return new Car(
             $dto->brand,

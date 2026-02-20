@@ -9,7 +9,7 @@ use App\Entity\Personal;
 #[AutoconfigureTag('app.factory')]
 class PersonalFactory
 {
-    public static function createFromDto(PersonalDto $dto): Personal
+    public function createFromDto(PersonalDto $dto): Personal
     {
         return new Personal(
             $dto->name,

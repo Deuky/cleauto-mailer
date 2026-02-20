@@ -2,9 +2,13 @@
 
 namespace App\Dto;
 
-readonly class AgreementDto
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Interface\DtoInterface;
+
+readonly class AgreementDto implements DtoInterface
 {
     public function __construct(
-        public RgpdDto $rgpd,
+        #[Assert\Valid]
+        public RGPDDto $rgpd,
     ) {}
 }

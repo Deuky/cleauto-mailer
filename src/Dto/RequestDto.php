@@ -2,7 +2,9 @@
 
 namespace App\Dto;
 
-readonly class RequestDto
+use App\Interface\DtoInterface;
+
+readonly class RequestDto implements DtoInterface
 {
     public function __construct(
         public bool $repairKey,

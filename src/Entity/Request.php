@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-readonly class KeyRequest
+readonly class Request
 {
     public function __construct(
         public bool $repairKey,

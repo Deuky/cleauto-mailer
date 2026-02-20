@@ -4,7 +4,9 @@ namespace App\Dto;
 
 use DateTimeInterface;
 
-readonly class RgpdDto
+use App\Interface\DtoInterface;
+
+readonly class RGPDDto implements DtoInterface
 {
     public function __construct(
         public bool $status,

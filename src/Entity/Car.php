@@ -14,6 +14,6 @@ readonly class Car
         public string $VIN,
         public DateTimeInterface $firstRegistration,
         public string $address,
-        public array $attachments,
+        public array $attachments = [],
     ) {}
 }
