@@ -2,9 +2,11 @@
 
 namespace App\Factory;
 
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use App\Dto\CarDto;
 use App\Entity\Car;
 
+#[AutoconfigureTag('app.factory')]
 class CarFactory
 {
     public static function createFromDto(CarDto $dto): Car
