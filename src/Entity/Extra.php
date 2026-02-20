@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-readonly class Extra extends AbstractEntity
+readonly class Extra
 {
     public function __construct(
         public string $informations,

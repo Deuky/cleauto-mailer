@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use DateTimeInterface;
 
-readonly class RGPD extends AbstractEntity
+readonly class RGPD
 {
     public function __construct(
         public bool $status,
