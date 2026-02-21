@@ -10,8 +10,9 @@ class EmojiExtension
     public function formatEmoji(string $value): string
     {
         return match($value) {
-            'true' => '✅',
-            'false' => '❌',
+            '1', 'true' => '✅',
+
+            '0', '', 'false' => '❌',
             default => $value
         };
     }

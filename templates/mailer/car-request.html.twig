@@ -10,22 +10,22 @@
 			<tr><td colspan="2"><h2 style="margin: 0px">Voiture</h2></td></tr>
 			<tr><td>Marque</td><td>{{ car.brand|default() }}</td></tr>
 			<tr><td>Modèle</td><td>{{ car.model|default() }}</td></tr>
-			<tr><td>Carburant</td><td>{{ car.fuel|default() }}</td></tr>
+			<tr><td>Carburant</td><td>{{ car.fuel.name|default() }}</td></tr>
 			<tr><td>Numéro de chassis</td><td>{{ car.VIN|default() }}</td></tr>
-			<tr><td>Première Immatriculation</td><td>{{ car["first-registration"]|default() }}</td></tr>
-			<tr><td>Adresse de dépannage</td><td>{{ car["address"]|default() }}</td></tr>
-			<tr><td>Photos</td><td>{{ car["attachments"]|length }}</td></tr>
+			<tr><td>Première Immatriculation</td><td>{{ car.firstRegistration|date("d/m/Y")|default() }}</td></tr>
+			<tr><td>Adresse de dépannage</td><td>{{ car.address|default() }}</td></tr>
+			<tr><td>Photos</td><td>{{ car.attachments|length }}</td></tr>
 
 			<tr><td colspan="2"><h2 style="margin: 0px">Key</h2></td></tr>
-			<tr><td>Main libre</td><td>{{ key["is-hand-free"]|default()|emoji }}</td></tr>
-			<tr><td>Photos</td><td>{{ key["attachments"]|length }}</td></tr>
+			<tr><td>Main libre</td><td>{{ key.isHandFree|default()|emoji }}</td></tr>
+			<tr><td>Photos</td><td>{{ key.attachments|length }}</td></tr>
 
 			<tr><td colspan="2"><h2 style="margin: 0px">Demande</h2></td></tr>
-			<tr><td>Réparation de la clef</td><td>{{ request["repair-key"]|default()|emoji }}</td></tr>
-			<tr><td>Copie de clef</td><td>{{ request["copy-key"]|default()|emoji }}</td></tr>
-			<tr><td>Télécommande fonctionnelle</td><td>{{ request["command-works"]|default()|emoji }}</td></tr>
-			<tr><td>Dépanage: toutes clefs perdues</td><td>{{ request["all-key-lost"]|default()|emoji }}</td></tr>
-			<tr><td>Voiture ouverte</td><td>{{ request["car-opened"]|default()|emoji }}</td></tr>
+			<tr><td>Réparation de la clef</td><td>{{ request.repairKey|default()|emoji }}</td></tr>
+			<tr><td>Copie de clef</td><td>{{ request.copyKey|default()|emoji }}</td></tr>
+			<tr><td>Télécommande fonctionnelle</td><td>{{ request.commandWorks|default()|emoji }}</td></tr>
+			<tr><td>Dépanage: toutes clefs perdues</td><td>{{ request.allKeyLost|default()|emoji }}</td></tr>
+			<tr><td>Voiture ouverte</td><td>{{ request.carOpened|default()|emoji }}</td></tr>
 
 			<tr><td colspan="2"><h2 style="margin: 0px">Extra information</h2></td></tr>
 			<tr><td>Information supplémentaire</td><td>{{ extra.informations|default() }}</td></tr>
@@ -33,11 +33,11 @@
 			<tr><td colspan="2"><h2 style="margin: 0px">RGPD</h2></td></tr>
 			<tr><td>Action : Case cochée manuellement</td><td>{{ agreement.rgpd.status|default()|emoji }}</td></tr>
 			<tr><td>Contenu de l'accord</td><td>{{ agreement.rgpd.content|default() }}</td></tr>
-			<tr><td>Date de la requête</td><td>{{ agreement.rgpd["request-date"]|default() }}</td></tr>
-			<tr><td>Date du traitement</td><td>{{ agreement.rgpd["request-trait-date"]|default() }}</td></tr>
+			<tr><td>Date de la requête</td><td>{{ agreement.rgpd.requestDate|date("d/m/Y H:i:s", "Europe/Brussels")|default() }}</td></tr>
+			<tr><td>Date du traitement</td><td>{{ agreement.rgpd.requestTraitDate|date("d/m/Y H:i:s", "Europe/Brussels")|default() }}</td></tr>
 			<tr><td>URL du formulaire</td><td>{{ agreement.rgpd.url|default() }}</td></tr>
 			<tr><td>Adresse IP</td><td>{{ agreement.rgpd.ip|default() }}</td></tr>
-			<tr><td>Nombre de documents</td><td>{{ agreement.rgpd["count-uploaded-files"] }}</td></tr>
+			<tr><td>Nombre de documents</td><td>{{ agreement.rgpd.countUploadedFiles }}</td></tr>
 
 		</table>
 	</body>
