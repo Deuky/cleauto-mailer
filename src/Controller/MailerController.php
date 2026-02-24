@@ -2,19 +2,26 @@
 
 namespace App\Controller;
 
-use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\HttpFoundation\Request;
+use App\Service\ServiceFactory;
+use App\Service\ServiceDto;
+use App\Service\ServiceReference;
 use Symfony\Component\Mime\Part\DataPart;
 use Symfony\Component\Mime\Part\File;
 
 final class MailerController extends AbstractController
 {
+    public function __construct(
+        public readonly ServiceFactory $serviceFactory,
+        public readonly ServiceReference $referenceService,
+        public readonly ServiceDto $dtoService,
+    ){}
+
     #[Route('/', methods: 'GET', name: 'app_mailer_get')]
     public function index(MailerInterface $mailer): Response
     {
@@ -22,31 +29,33 @@ final class MailerController extends AbstractController
     }
 
     #[Route('/mailer', methods: 'POST', name: 'app_mailer_post')]
-    public function post(Request $request, MailerInterface $mailer, string $requestFrom, string $requestTo): JsonResponse
+    public function post(
+        MailerInterface $mailer, 
+        string $requestFrom, 
+        string $requestTo
+    ): JsonResponse
     {
-        $params = $request->getPayload()->all();
-        $params['agreement']['rgpd']['ip'] = $request->server->get('REMOTE_ADDR') ?? $request->getClientIp();
-        $params['agreement']['rgpd']['count-uploaded-files'] = 0;
-        $params['agreement']['rgpd']['request-trait-date'] = (new DateTime())->format(DATE_W3C);
-        $params['key']['attachments'] = $request->files->get('key')['attachments'] ?? [];
-        $params['car']['attachments'] = $request->files->get('car')['attachments'] ?? [];
-        $attachments = [
-            $params['key']['attachments'],
-            $params['car']['attachments']
-        ];
+        $dto = $this->dtoService->getDto();
+        $entities = $this->serviceFactory->factory($dto);
+        $identification = $this->referenceService->getIdentification($entities->personal, $entities->car, $entities->agreement->rgpd);
+        $caseNumber = implode(' ', $identification);
 
         $email = (new Email())
             ->from($requestFrom)
             ->to($requestTo)
-            ->subject('CleAuto - Demande d\'intervention');
+            ->subject('CleAuto - Demande d\'intervention - '. $caseNumber);
 
-        array_walk_recursive($attachments, function($file) use (&$params, $email) {
+        $attachments = [$entities->key->attachments, $entities->car->attachments];
+
+        array_walk_recursive($attachments, function($file) use ($email) {
+            static $i = 0;
+
             $email->addPart(
                 new DataPart(
                     new File($file),
                     implode('.', [
                             'item',
-                            $params['agreement']['rgpd']['count-uploaded-files']++,
+                            $i++,
                             $file->guessClientExtension()
                         ]
                     )
@@ -55,55 +64,29 @@ final class MailerController extends AbstractController
         });
 
         $rawData = tmpfile();
-        fwrite($rawData, json_encode($params));
+        fwrite($rawData, json_encode($dto));
 
         $email->addPart((new DataPart($rawData, 'raw-data.json', 'application/json'))->asInline());
 
         $mailer->send($email->html(
-                $this->renderView('mailer/car-request.html.twig', $params)
+                $this->renderView('mailer/car-request.html.twig', (array) $entities + ['caseNumber' => $caseNumber])
             ));
 
         return $this->json(["Accept"]);
     }
 
     #[Route('/mailer/preview', methods: 'POST', name: 'app_mailer_preview')]
-    public function preview(Request $request, MailerInterface $mailer, string $requestFrom, string $requestTo): Response
+    public function preview(): Response
     {
-        $params = $request->getPayload()->all();
-        $params['agreement']['rgpd']['ip'] = $request->server->get('REMOTE_ADDR') ?? $request->getClientIp();
-        $params['agreement']['rgpd']['count-uploaded-files'] = 0;
-        $params['agreement']['rgpd']['request-trait-date'] = (new DateTime())->format(DATE_W3C);
-        $params['key']['attachments'] = $request->files->get('key')['attachments'] ?? [];
-        $params['car']['attachments'] = $request->files->get('car')['attachments'] ?? [];
-        $attachments = [
-            $params['key']['attachments'],
-            $params['car']['attachments']
-        ];
-
-        $email = (new Email())
-            ->from($requestFrom)
-            ->to($requestTo)
-            ->subject('CleAuto - Demande d\'intervention');
-
-        array_walk_recursive($attachments, function($file) use (&$params, $email) {
-            $email->addPart(
-                new DataPart(
-                    new File($file),
-                    implode('.', [
-                            'item',
-                            $params['agreement']['rgpd']['count-uploaded-files']++,
-                            $file->guessClientExtension()
-                        ]
-                    )
-                )
+        $entities = $this->serviceFactory->factory(
+                $this->dtoService->getDto()
             );
-        });
 
-        $rawData = tmpfile();
-        fwrite($rawData, json_encode($params));
+        $identification = $this->referenceService->getIdentification($entities->personal, $entities->car, $entities->agreement->rgpd);
 
-        $email->addPart((new DataPart($rawData, 'raw-data.json', 'application/json'))->asInline());
-
-        return $this->render('mailer/car-request.html.twig', $params);
+        return $this->render(
+            'mailer/car-request.html.twig', 
+            (array) $entities + ['caseNumber' => implode(' ', $identification)]
+        );
     }
 }

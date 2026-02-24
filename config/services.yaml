@@ -10,6 +10,16 @@ parameters:
     request.from: '%env(string:REQUEST_FROM)%'
     request.to: '%env(string:REQUEST_TO)%'
 
+    dto_mapping:
+        app_mailer_preview:
+            class: 'App\Dto\PostMailerDto'
+            root_key: null
+
+        app_mailer_post:
+            class: 'App\Dto\PostMailerDto'
+            root_key: null
+
+
 services:
     # default configuration for services in *this* file
     _defaults:
