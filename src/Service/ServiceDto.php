@@ -41,9 +41,13 @@ class ServiceDto
         $params = $this->request->request->all();
         array_walk_recursive(
             $params,
-            fn(&$value) => $value = $value ? : null
+            fn(&$value) => $value = match($value) {
+                                "false" => false,
+                                "true" => true,
+                                default => $value ?: null
+                            }
         );
-        
+
         return array_replace_recursive(
             $params,
             $this->request->files->all()
