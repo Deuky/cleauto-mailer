@@ -11,7 +11,6 @@ class EmojiExtension
     {
         return match($value) {
             '1', 'true' => '✅',
-
             '0', '', 'false' => '❌',
             default => $value
         };

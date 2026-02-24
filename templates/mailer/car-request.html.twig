@@ -1,5 +1,6 @@
 <html>
 	<body>
+		<h3>Dossier: {{ caseNumber }}</h3>
 		<table  border="1" cellpadding="6" cellspacing="0">
 			<tr><th colspan="2"><h2 style="margin: 0px">Information personnel</h2></th></tr>
 			<tr><th widtd="15%">Question</th><th widtd="85%">Réponse</th></tr>
@@ -12,7 +13,7 @@
 			<tr><td>Modèle</td><td>{{ car.model|default() }}</td></tr>
 			<tr><td>Carburant</td><td>{{ car.fuel.name|default() }}</td></tr>
 			<tr><td>Numéro de chassis</td><td>{{ car.VIN|default() }}</td></tr>
-			<tr><td>Première Immatriculation</td><td>{{ car.firstRegistration|date("d/m/Y")|default() }}</td></tr>
+			<tr><td>Première Immatriculation</td><td>{% if (car.firstRegistration ?? null) %} {{ car.firstRegistration|date("d/m/Y")|default() }} {% endif %}</td></tr>
 			<tr><td>Adresse de dépannage</td><td>{{ car.address|default() }}</td></tr>
 			<tr><td>Photos</td><td>{{ car.attachments|length }}</td></tr>
 

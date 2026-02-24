@@ -12,16 +12,28 @@ final class ServiceReference
 {
     public function getReference(Personal $personal, Car $car): string
     {
-        $initials = strtoupper(substr($personal->name, 0, 2));
-        $crc16 = $this->calculateCrc16($car->VIN);
-        return implode([$initials, $crc16]);
+        $fullname = explode(' ', $personal->name);
+
+        $initials = implode (
+            match(count($fullname)) {
+                0 => ['*', '*'],
+                1 => [
+                    '*', 
+                    strtoupper(current($fullname)[0])
+                ],
+                default => array_map(fn($n) => strtoupper($n[0]), $fullname)
+            }
+        );
+
+        $crc16 = $this->calculateCrc16($car->VIN ?? '****');
+        return implode('-', [$initials, $crc16]);
     }
 
     public function getVerification(string $reference, RGPD $rgpd): string
     {
         $compressedDate = $this->compressDate($rgpd->requestDate);
         $checksum = $this->calculateChecksum($reference . $compressedDate);
-        return implode ([$compressedDate, $checksum]);
+        return implode ('-', [$compressedDate, $checksum]);
     }
 
     public function getIdentification(Personal $personal, Car $car, RGPD $rgpd): array

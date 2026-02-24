@@ -12,8 +12,8 @@ readonly class CarDto implements DtoInterface
         public string $brand,
         public string $model,
         public FuelType $fuel,
-        public string $VIN,
-        public DateTimeInterface $firstRegistration,
+        public ?string $VIN = null,
+        public ?DateTimeInterface $firstRegistration = null,
         public string $address,
         public array $attachments = [],
     ) {

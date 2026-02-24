@@ -24,7 +24,7 @@ class RGPDFactory
             $dto->content,
             $dto->requestDate,
             new DateTimeImmutable(),
-            $request->getUri(),
+            $request->headers->get('referer') ?? "",
             $request->server->get('REMOTE_ADDR') ?? $request->getClientIp(),
             $request->files->count(),
         );

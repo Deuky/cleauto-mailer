@@ -8,6 +8,6 @@ readonly class KeyDto implements DtoInterface
 {
     public function __construct(
         public bool $isHandFree,
-        public array $attachments = [],
+        public array $attachments = []
     ) {}
 }

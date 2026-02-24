@@ -8,14 +8,18 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mailer\MailerInterface;
-use App\Dto\PostMailerDto;
-use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use App\Service\ServiceFactory;
+use App\Service\ServiceDto;
+use App\Service\ServiceReference;
+use Symfony\Component\Mime\Part\DataPart;
+use Symfony\Component\Mime\Part\File;
 
 final class MailerController extends AbstractController
 {
     public function __construct(
-        public readonly ServiceFactory $serviceFactory
+        public readonly ServiceFactory $serviceFactory,
+        public readonly ServiceReference $referenceService,
+        public readonly ServiceDto $dtoService,
     ){}
 
     #[Route('/', methods: 'GET', name: 'app_mailer_get')]
@@ -26,21 +30,24 @@ final class MailerController extends AbstractController
 
     #[Route('/mailer', methods: 'POST', name: 'app_mailer_post')]
     public function post(
-        #[MapRequestPayload] 
-        PostMailerDto $dto, 
         MailerInterface $mailer, 
         string $requestFrom, 
         string $requestTo
     ): JsonResponse
     {
-        $entites = $this->serviceFactory->factory($dto);
+        $dto = $this->dtoService->getDto();
+        $entities = $this->serviceFactory->factory($dto);
+        $identification = $this->referenceService->getIdentification($entities->personal, $entities->car, $entities->agreement->rgpd);
+        $caseNumber = implode(' ', $identification);
 
         $email = (new Email())
             ->from($requestFrom)
             ->to($requestTo)
-            ->subject('CleAuto - Demande d\'intervention');
+            ->subject('CleAuto - Demande d\'intervention - '. $caseNumber);
 
-        array_walk_recursive([$entities->key->attachments, $entities->car->attachments], function($file) {
+        $attachments = [$entities->key->attachments, $entities->car->attachments];
+
+        array_walk_recursive($attachments, function($file) use ($email) {
             static $i = 0;
 
             $email->addPart(
@@ -57,23 +64,29 @@ final class MailerController extends AbstractController
         });
 
         $rawData = tmpfile();
-        fwrite($rawData, json_encode($params));
+        fwrite($rawData, json_encode($dto));
 
         $email->addPart((new DataPart($rawData, 'raw-data.json', 'application/json'))->asInline());
 
         $mailer->send($email->html(
-                $this->renderView('mailer/car-request.html.twig', (array) $entities)
+                $this->renderView('mailer/car-request.html.twig', (array) $entities + ['caseNumber' => $caseNumber])
             ));
 
         return $this->json(["Accept"]);
     }
 
     #[Route('/mailer/preview', methods: 'POST', name: 'app_mailer_preview')]
-    public function preview(
-        #[MapRequestPayload] 
-        PostMailerDto $dto,
-    ): Response
+    public function preview(): Response
     {
-        return $this->render('mailer/car-request.html.twig', (array) $this->serviceFactory->factory($dto));
+        $entities = $this->serviceFactory->factory(
+                $this->dtoService->getDto()
+            );
+
+        $identification = $this->referenceService->getIdentification($entities->personal, $entities->car, $entities->agreement->rgpd);
+
+        return $this->render(
+            'mailer/car-request.html.twig', 
+            (array) $entities + ['caseNumber' => implode(' ', $identification)]
+        );
     }
 }
