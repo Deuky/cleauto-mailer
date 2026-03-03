@@ -20,6 +20,7 @@ readonly class PostMailerDto implements DtoInterface
 
         #[Assert\Valid]
         public RequestDto $request,
+        
 		#[Assert\Collection(
             fields: [
                 'informations' => new Assert\Optional([new Assert\Type('string')])

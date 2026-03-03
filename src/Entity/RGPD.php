@@ -14,5 +14,6 @@ readonly class RGPD
         public string $url,
         public string $ip,
         public int $countUploadedFiles,
+        public Biometry $biometry
     ) {}
 }
