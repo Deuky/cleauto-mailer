@@ -23,6 +23,9 @@ parameters:
             class: 'App\Dto\PostAssistanceDto'
             root_key: null
 
+        app_assistance_preview:
+            class: 'App\Dto\PostAssistanceDto'
+            root_key: null
 
 services:
     # default configuration for services in *this* file

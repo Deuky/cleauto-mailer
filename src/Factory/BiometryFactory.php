@@ -13,7 +13,7 @@ class BiometryFactory
     public function createFromDto(?BiometryDto $dto): Biometry
     {
         return new Biometry(
-            signature: $dto->signature ? $this->getResource($dto->signature) : null
+            signature: ($dto->signature ?? null) ? $this->getResource($dto->signature) : null
         );
     }
 

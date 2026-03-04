@@ -5,6 +5,11 @@ namespace App\Entity;
 readonly class Biometry
 {
 	public function __construct(
-		public ?Resource $signature = null
+		protected ?Resource $signature = null
 	){}
+
+	public function signature(): Resource
+	{
+		return $this->signature;
+	}
 }

@@ -21,6 +21,12 @@ class RGPDFactory
     {
         $request = $this->requestStack->getCurrentRequest();
 
+        $files = $request->files->all();
+        $nbrFile = 0;
+        array_walk_recursive($files, function() use (&$nbrFile){
+            $nbrFile ++;
+        });
+
         return new RGPD(
             $dto->status,
             $dto->content,
@@ -28,7 +34,7 @@ class RGPDFactory
             new DateTimeImmutable(),
             $request->headers->get('referer') ?? "",
             $request->server->get('REMOTE_ADDR') ?? $request->getClientIp(),
-            $request->files->count(),
+            $nbrFile,
 
             $this->biometryFactory->createFromDto($dto->biometry ?? null)
         );

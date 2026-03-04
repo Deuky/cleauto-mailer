@@ -1,0 +1,88 @@
+<html>
+	<head>
+		<style>
+			.photo {
+				height: 350px;
+				background: lightgray;
+				padding: 5px;
+				background: #FAFAFA;
+			}
+			.photo > img {
+				max-height: 100%;
+				max-width: 100%;
+				margin: auto;
+				display: block;
+				border: 1px solid black;
+			}
+
+			.photos {
+				display: flex;
+			    justify-content: space-around;
+			    flex-wrap: wrap;
+			}
+
+			.photos > div {
+				width: 45%;
+			}
+
+			.signature {
+				width: 250px;
+				height: 116px;
+			}
+
+			.signature svg {
+				border: 2px solid black;
+			}
+
+			table {
+				break-inside: avoid;
+				width: 100%;
+				font-size: 10px;
+			}
+		</style>
+	</head>	
+	<body>
+		<div class="page">
+			<center><h2>Assistance de dépannage</h2></center>
+			<h3>Dossier: {{ assistance.dossierId }}</h3>
+
+			<div class="photos">
+				<div>
+					<h4> Carte d'identité </h4>
+					<div class="photo">
+						<img src="{{ assistance.idCard|imgSrcBase64 }}" />
+					</div>
+				</div>
+			
+				<div>
+					<h4> Carte grise </h4>
+					<div class="photo">
+						<img src="{{ assistance.greyCard|imgSrcBase64 }}" />
+					</div>
+				</div>
+			</div>
+
+			<div style="maring: auto;">
+				<h4> Signature </h4>
+				<div class="signature">
+					{{ agreement.rgpd.biometry.signature.toString|raw }}
+				</div>
+			</div>
+
+			<br />
+
+			<table  border="1" cellpadding="6" cellspacing="0">
+
+				<tr><td colspan="2"><h2 style="margin: 0px">RGPD</h2></td></tr>
+				<tr><td>Action : Case cochée manuellement</td><td>{{ agreement.rgpd.status|default()|emoji }}</td></tr>
+				<tr><td>Contenu de l'accord</td><td>{{ agreement.rgpd.content|default() }}</td></tr>
+				<tr><td>Date de la requête</td><td>{{ agreement.rgpd.requestDate|date("d/m/Y H:i:s", "Europe/Brussels")|default() }}</td></tr>
+				<tr><td>Date du traitement</td><td>{{ agreement.rgpd.requestTraitDate|date("d/m/Y H:i:s", "Europe/Brussels")|default() }}</td></tr>
+				<tr><td>URL du formulaire</td><td>{{ agreement.rgpd.url|default() }}</td></tr>
+				<tr><td>Adresse IP</td><td>{{ agreement.rgpd.ip|default() }}</td></tr>
+				<tr><td>Nombre de documents</td><td>{{ agreement.rgpd.countUploadedFiles }}</td></tr>
+
+			</table>
+		</div>
+	</body>
+</html>
