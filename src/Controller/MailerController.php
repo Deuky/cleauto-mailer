@@ -2,28 +2,18 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mailer\MailerInterface;
-use App\Service\ServiceFactory;
-use App\Service\ServiceDto;
-use App\Service\ServiceReference;
 use Symfony\Component\Mime\Part\DataPart;
 use Symfony\Component\Mime\Part\File;
 
 final class MailerController extends AbstractController
 {
-    public function __construct(
-        public readonly ServiceFactory $serviceFactory,
-        public readonly ServiceReference $referenceService,
-        public readonly ServiceDto $dtoService,
-    ){}
-
     #[Route('/', methods: 'GET', name: 'app_mailer_get')]
-    public function index(MailerInterface $mailer): Response
+    public function index(): Response
     {
         return $this->render('app/index.html.twig');
     }

@@ -1,0 +1,8 @@
+framework:
+    http_client:
+        scoped_clients:
+            gotenberg.client:
+                base_uri: 'http://gotenberg:3000'
+
+sensiolabs_gotenberg:
+    http_client: 'gotenberg.client'
