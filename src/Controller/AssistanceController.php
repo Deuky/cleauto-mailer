@@ -22,13 +22,13 @@ final class AssistanceController extends AbstractController
     #[Route('/depannage', methods: 'POST', name: 'app_assistance_post')]
     public function post(MailerInterface $mailer, string $requestFrom, string $requestTo): Response
     {
-    	$dto = $this->dtoService->getDto();
-    	$biometry = $dto->agreement->rgpd->biometry;
-    	$signature = $biometry ?? $biometry->signature;
+        $dto = $this->dtoService->getDto();
+        $biometry = $dto->agreement->rgpd->biometry;
+        $signature = $biometry ?? $biometry->signature;
 
-    	if ( !$signature ) {
-    		throw new \UnexpectedValueException('No Signature');
-    	}
+        if ( !$signature ) {
+            throw new \UnexpectedValueException('No Signature');
+        }
 
         $entities = $this->serviceFactory->factory($dto);
 
@@ -40,10 +40,7 @@ final class AssistanceController extends AbstractController
 
         $filename = stream_get_meta_data($generate)['uri'];
 
-        $pdf = tmpfile();
-        $this->pdfEncryptionService->encrypt($filename, $pdf);
-
-        $pdfFilename = stream_get_meta_data($pdf)['uri'];
+        $pdf = $this->pdfEncryptionService->encrypt($filename);
 
         $email = (new Email())
             ->from($requestFrom)
@@ -52,7 +49,7 @@ final class AssistanceController extends AbstractController
 
         $email->addPart(
             new DataPart(
-                new File($filename),
+                new File($pdf),
                 'item.pdf'
             )
         );
