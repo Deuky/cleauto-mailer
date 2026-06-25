@@ -32,7 +32,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: .
           target: base
@@ -43,7 +43,7 @@ jobs:
             ghcr.io/${{ env.GHCR_REPOSITORY }}/base:latest
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: .
           target: artifact
@@ -54,7 +54,7 @@ jobs:
             ghcr.io/${{ env.GHCR_REPOSITORY }}/artifact:latest
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: .
           target: unit
